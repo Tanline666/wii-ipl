@@ -3,6 +3,8 @@
 #include "system/iplNandSDWorker.h"
 
 #include "iplSystem.h"
+#include "revolution/net/NETDigest.h"
+#include "revolution/types.h"
 
 #include <revolution.h>
 
@@ -35,4 +37,16 @@ namespace ipl {
 
         return TRUE;
     }
+    BOOL NandSDWorker::check_md5(const u8* sum, const u8* buffer, u32 length) {
+        NETMD5Sum md5;
+        NETCalcMD5(md5, buffer, length);
+
+        for (int i = 0; i < NET_MD5_DIGEST_SIZE; i++) {
+            if (md5[i] != sum[i]) {
+                OSReport("BANNER WARNING: invalid md5 value ( data )\n");
+                return FALSE;
+            }
+        }
+        return TRUE;
+        }
 }  // namespace ipl
